@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kin.easynotes"
+    namespace = "com.whatevercollab.myeasynotes"
     compileSdk = 36
     flavorDimensions += "store"
 
