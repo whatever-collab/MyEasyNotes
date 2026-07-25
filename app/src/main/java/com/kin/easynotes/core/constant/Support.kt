@@ -1,7 +1,7 @@
 package com.kin.easynotes.core.constant
 
 import android.content.Context
-import com.kin.easynotes.R
+import com.whatevercollab.myeasynotes.R
 
 object SupportConst {
     /**
