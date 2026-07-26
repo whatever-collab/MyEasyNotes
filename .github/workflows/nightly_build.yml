@@ -21,10 +21,24 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Fix Package Imports
-        # Automatically replaces old package imports with our new namespace
+      - name: Clean Previous Builds
+        # Ensures no cached errors interfere
+        run: ./gradlew clean --no-daemon
+
+      - name: Fix Package Imports Aggressively
+        # Replaces ALL instances of the old R import with the new one
         run: |
-          find app/src -name "*.kt" -type f -exec sed -i 's/import com\.kin\.easynotes\.R/import com.whatevercollab.myeasynotes.R/g' {} +
+          find app/src -type f -name "*.kt" -exec sed -i 's/import com\.kin\.easynotes\.R/import com.whatevercollab.myeasynotes.R/g' {} +
+          # Also check for any accidental android.R imports which can cause confusion
+          find app/src -type f -name "*.kt" -exec sed -i 's/import android\.R$/import com.whatevercollab.myeasynotes.R/g' {} +
+
+      - name: Verify Imports Changed
+        # This step will fail if there are still old imports left, helping us debug
+        run: |
+          if grep -r "import com\.kin\.easynotes\.R" app/src; then
+            echo "ERROR: Old imports still exist!"
+            exit 1
+          fi
 
       - name: Build FDROID Release APK
         # Builds the fdroid flavor which excludes Google services
