@@ -21,6 +21,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Fix Package Imports
+        # Automatically replaces old package imports with our new namespace
+        run: |
+          find app/src -name "*.kt" -type f -exec sed -i 's/import com\.kin\.easynotes\.R/import com.whatevercollab.myeasynotes.R/g' {} +
+
       - name: Build FDROID Release APK
         # Builds the fdroid flavor which excludes Google services
         run: ./gradlew assembleFdroidRelease --no-daemon
